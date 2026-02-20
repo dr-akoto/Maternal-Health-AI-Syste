@@ -2,8 +2,21 @@ import { createClient, Session, AuthChangeEvent } from '@supabase/supabase-js';
 import 'react-native-url-polyfill/auto';
 import { Database } from '../types/supabase';
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
+
+// Check for missing configuration
+if (!supabaseUrl || supabaseUrl === 'https://your-project-id.supabase.co') {
+  console.warn(
+    '⚠️ Supabase URL not configured!\n' +
+    'Please update your .env file with your Supabase credentials:\n' +
+    '1. Go to https://supabase.com and sign in\n' +
+    '2. Create a new project or select existing one\n' +
+    '3. Go to Project Settings > API\n' +
+    '4. Copy the credentials to your .env file\n' +
+    '5. Restart the Expo development server'
+  );
+}
 
 // Custom error handler
 const handleError = (error: any, context: string) => {
@@ -11,8 +24,12 @@ const handleError = (error: any, context: string) => {
   return error;
 };
 
+// Use a placeholder URL if not configured (app will show warning but won't crash)
+const effectiveUrl = supabaseUrl || 'https://placeholder.supabase.co';
+const effectiveKey = supabaseAnonKey || 'placeholder-key';
+
 // Create a singleton instance of the Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient<Database>(effectiveUrl, effectiveKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
