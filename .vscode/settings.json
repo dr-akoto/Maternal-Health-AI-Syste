@@ -1,0 +1,10 @@
+{
+  "files.associations": {
+    "*.sql": "sql"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": null
+  },
+  "mssql.intelliSense.enableIntelliSense": false,
+  "mssql.query.setRowCount": 0
+}
